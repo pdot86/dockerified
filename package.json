@@ -1,0 +1,45 @@
+{
+  "name": "dockerified",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "docker:image": "docker build --no-cache --build-arg PROJECT=\"$npm_package_name\" --tag buildenv --tag buildenv:latest --tag buildenv:$npm_package_version  .",
+    "docker:run": "docker run -it --name $npm_package_name -v $(pwd):/workspace -v /workspace/node_modules buildenv",
+    "docker:kill": "docker kill $(docker ps -aq -f ancestor=buildenv -f status=running -f status=restarting)",
+    "docker:prune": "docker rm --force $(docker ps -aq -f ancestor=buildenv -f status=created -f status=paused -f status=exited -f status=dead)",
+    "docker:images": "docker images -aq -f reference=buildenv | sort -u",
+    "docker:containers": "docker ps -aq -f ancestor=buildenv",
+    "docker:active": "docker ps -aq -f ancestor=buildenv -f status=running -f status=restarting",
+    "docker:inactive": "docker ps -aq -f ancestor=buildenv -f status=created -f status=paused -f status=exited -f status=dead",
+    "docker:clean": "npm run docker:prune && docker rmi --force $(docker images -aq -f reference=buildenv)",
+    "build:docker": "npm run docker:run"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.1.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.1.0"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pdot86/dockerified.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pdot86/dockerified/issues"
+  },
+  "homepage": "https://github.com/pdot86/dockerified#readme",
+  "description": ""
+}
